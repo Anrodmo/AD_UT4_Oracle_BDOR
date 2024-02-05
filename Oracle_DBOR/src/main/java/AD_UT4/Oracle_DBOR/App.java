@@ -17,7 +17,7 @@ public class App
 		a.abrirConexion();   
 		a.mostrarContactos();
 		// a.insertaralumno(new Estudiante("ID002",new Persona("Felipe","967124578")));
-		a.eliminarAlumno("Andrés");
+		a.eliminarAlumno("juan");
 		a.cerrarConexion();
 		
 			

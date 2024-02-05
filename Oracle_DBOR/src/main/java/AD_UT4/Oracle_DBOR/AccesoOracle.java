@@ -99,13 +99,14 @@ public class AccesoOracle {
 			
 			// ahora lanzo la consulta
 			int res = statement.executeUpdate();
+			
 			if(res == 1)
 				insertCorrecto=true;
 			System.out.println("Si el codigo ha llegado hasta aqui es que se ha insertado"
 					+ "correctamente, filas modificadas: "+res);			
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		return insertCorrecto;
@@ -119,15 +120,22 @@ public class AccesoOracle {
 	 */
 	boolean eliminarAlumno(String nombre) {
 		boolean operacionCorrecta = false;				
-		String sqlDelete = "DELETE FROM misAlumnos WHERE estudiante.datos_personales.nombre = ?";
+		String sqlDelete = "DELETE FROM misAlumnos a WHERE a.datos_personales.nombre = ?";
 		
 		try(PreparedStatement preparedStatement = conexion.prepareStatement(sqlDelete)){
 			preparedStatement.setString(1, nombre);
 			int filasAfectadas = preparedStatement.executeUpdate();
+			//conexion.commit();
 			operacionCorrecta = filasAfectadas>0;
 			System.out.println("si essto sin error: "+operacionCorrecta);
 		} catch (SQLException e) {
 			System.out.println("Si esto error");
+//			try {
+//				conexion.rollback();
+//			} catch (SQLException e1) {
+//				System.out.println("Si esto error en el rollback");
+//				e1.printStackTrace();
+//			}
 			e.printStackTrace();
 		}
 		
