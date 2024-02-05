@@ -15,12 +15,17 @@ public class App
     {
     	AccesoOracle a = new AccesoOracle();
 		a.abrirConexion();   
-		a.mostrarContactos();
+		
 		// a.insertaralumno(new Estudiante("ID002",new Persona("Felipe","967124578")));
 		// a.eliminarAlumno("juan");
 		
-		a.obtenerTelefonoAlumno("Felipe");
-		a.obtenerPersonaDesdeBaseDeDatos("Felipe");
+		a.obtenerTelefonoAlumno("Felipe");   // consulta tradicional
+		
+		System.out.println("");
+		a.obtenerEstudiantesPorNombre("Andrés");
+		System.out.println("");
+		a.obtenerEstudiantes();
+		
 		a.cerrarConexion();
 		
 			

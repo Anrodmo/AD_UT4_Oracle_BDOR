@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Struct;
+import java.util.ArrayList;
 
 
 /**
@@ -168,39 +169,87 @@ public class AccesoOracle {
 
 	    return operacionCorrecta;
 	}
+		
+		
 	
-	public  void obtenerPersonaDesdeBaseDeDatos(String nombre) {
-        String sqlSelect = "SELECT a.datos_personales FROM misAlumnos a WHERE a.datos_personales.nombre = ?";
-        
-        try (PreparedStatement preparedStatement = conexion.prepareStatement(sqlSelect)) {
-            preparedStatement.setString(1, nombre);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-            	while (resultSet.next()) {
-                    Struct struct = (Struct) resultSet.getObject("datos_personales");
+	/**
+	 * Método similar al anterior pero aprovecha la ORDB para obtener objetos estudiante y los devuelvo
+	 * en un ArrayList
+	 * @param nombre  - nombre del que se quiere obtener los objetos Persona
+	 * @return ArrayList<Estudiante> con los resultados
+	 */
+	public ArrayList<Estudiante> obtenerEstudiantesPorNombre(String nombre) {
+	    String sqlSelect = "SELECT a.id_estudiante, a.datos_personales FROM misAlumnos a WHERE a.datos_personales.nombre = ?";
+	    ArrayList<Estudiante> listadoEstudiantes = new ArrayList<>();
 
-                    // Obtener los atributos de la estructura
-                    Object[] attributes = struct.getAttributes();
+	    try (PreparedStatement preparedStatement = conexion.prepareStatement(sqlSelect)) {
+	        preparedStatement.setString(1, nombre);
+	        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+	            while (resultSet.next()) {
+	                // Recupero el id
+	                String id = resultSet.getString("id_estudiante");
+	                // Recupero los tipos PERSONA de la consulta
+	                Struct struct = (Struct) resultSet.getObject("datos_personales");
 
-                    // Suponiendo que el tipo STRUCT tiene dos atributos: nombre y telefono
-                    String nombrePersona = (String) attributes[0];
-                    String telefonoPersona = (String) attributes[1];
+	                // obtengo los atributos de la estructura
+	                Object[] attributes = struct.getAttributes();
+	                String nombrePersona = (String) attributes[0];
+	                String telefonoPersona = (String) attributes[1];
+	                // Creo un objeto Persona
+	                Persona persona = new Persona(nombrePersona, telefonoPersona);
+	                // Creo un objeto Estudiante con id y Persona
+	                Estudiante estudiante = new Estudiante(id, persona);
+	                listadoEstudiantes.add(estudiante);
 
-                    // Crear un objeto Persona
-                    Persona persona = new Persona(nombrePersona, telefonoPersona);
+	                System.out.println("Estudiante encontrado: " + estudiante.getId_estudiante()+", "
+		            		+estudiante.getDatos_personales().getNombre()+", "+estudiante.getDatos_personales().getTelefono());
+	            }
+	        }
+	    } catch (SQLException e) {
+	        System.out.println("Error al obtener los estudiantes desde la base de datos.");
+	        e.printStackTrace();
+	    }
+	    return listadoEstudiantes;
+	}
+	
+	
+	
+	/**
+	 * Método que muestra y devuelve un ArrayList<Estudiante>  con los objetos de la tabla misalumnos
+	 * @return ArrayList<Estudiante>  con todos los registros de la tabla misalumnos
+	 */
+	public ArrayList<Estudiante> obtenerEstudiantes() {
+	    String sqlSelect = "SELECT a.id_estudiante, a.datos_personales FROM misAlumnos a";
+	    ArrayList<Estudiante> listadoEstudiantes = new ArrayList<>();
 
-                    // Haz lo que necesites con el objeto Persona
-                    System.out.println("Persona encontrada: " + persona.getNombre()+" telefono: "+persona.getTelefono());
-                }
+	    try (PreparedStatement preparedStatement = conexion.prepareStatement(sqlSelect);
+	         ResultSet resultSet = preparedStatement.executeQuery()) {
 
-                if (!resultSet.isClosed()) {
-                    resultSet.close();
-                }            
-            }
-        } catch (SQLException e) {
-            System.out.println("Error al obtener la persona desde la base de datos.");
-            e.printStackTrace();
-        }
-    }
+	        while (resultSet.next()) {
+	            // Recupero el id
+	            String id = resultSet.getString("id_estudiante");
+	            // Recupero los tipos PERSONA de la consulta
+	            Struct struct = (Struct) resultSet.getObject("datos_personales");
+	            // Obtengo los atributos de la estructura
+	            Object[] attributes = struct.getAttributes();
+	            String nombrePersona = (String) attributes[0];
+	            String telefonoPersona = (String) attributes[1];
+	            // Creo un objeto Persona
+	            Persona persona = new Persona(nombrePersona, telefonoPersona);
+	            // Crear un objeto Estudiante con id y Persona
+	            Estudiante estudiante = new Estudiante(id, persona);
+	            listadoEstudiantes.add(estudiante);
+
+	            System.out.println("Estudiante encontrado: " + estudiante.getId_estudiante()+", "
+	            		+estudiante.getDatos_personales().getNombre()+", "+estudiante.getDatos_personales().getTelefono());
+	        }
+
+	    } catch (SQLException e) {
+	        System.out.println("Error al obtener los estudiantes desde la base de datos.");
+	        e.printStackTrace();
+	    }
+	    return listadoEstudiantes;
+	}
 	
 	
 
