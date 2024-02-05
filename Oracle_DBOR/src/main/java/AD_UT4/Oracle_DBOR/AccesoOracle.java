@@ -125,17 +125,12 @@ public class AccesoOracle {
 		try(PreparedStatement preparedStatement = conexion.prepareStatement(sqlDelete)){
 			preparedStatement.setString(1, nombre);
 			int filasAfectadas = preparedStatement.executeUpdate();
-			//conexion.commit();
+			
 			operacionCorrecta = filasAfectadas>0;
-			System.out.println("si essto sin error: "+operacionCorrecta);
+			System.out.println("si esto sin error, resultado: "+operacionCorrecta);
 		} catch (SQLException e) {
 			System.out.println("Si esto error");
-//			try {
-//				conexion.rollback();
-//			} catch (SQLException e1) {
-//				System.out.println("Si esto error en el rollback");
-//				e1.printStackTrace();
-//			}
+//			
 			e.printStackTrace();
 		}
 		
@@ -143,6 +138,69 @@ public class AccesoOracle {
 		
 		return operacionCorrecta;
 	}
+	
+	/**
+	 * Método que muestra el teléfono de todos los alumnos que tenga el nombre facilitado
+	 * @param nombre -> nombre del alumno cuyo teléfono e quiere conocer
+	 * @return  True -> si no hay excepción y la consulta da al  menos un resultado.
+	 */
+	public boolean obtenerTelefonoAlumno(String nombre) {
+	    boolean operacionCorrecta = false;
+	    String telefono = null;
+	    String sqlSelect = "SELECT a.datos_personales.telefono FROM misAlumnos a WHERE a.datos_personales.nombre = ?";
+
+	    try (PreparedStatement preparedStatement = conexion.prepareStatement(sqlSelect)) {
+	        preparedStatement.setString(1, nombre);
+	        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+	            if (resultSet.next()) {	            	
+	                telefono = resultSet.getString("datos_personales.telefono"); // aqui recojo de la columna por nnombre
+	                // telefono = resultSet.getString(1);  // aqui recojo de la primera columna
+	                System.out.println("Teléfono de " + nombre + ": " + telefono);               	            		            	
+	                operacionCorrecta = true;
+	            } else {
+	                System.out.println("No se encontró ningún alumno con el nombre: " + nombre);
+	            }
+	        }
+	    } catch (SQLException e) {
+	        System.out.println("Error al obtener el teléfono del alumno.");
+	        e.printStackTrace();
+	    }
+
+	    return operacionCorrecta;
+	}
+	
+	public  void obtenerPersonaDesdeBaseDeDatos(String nombre) {
+        String sqlSelect = "SELECT a.datos_personales FROM misAlumnos a WHERE a.datos_personales.nombre = ?";
+        
+        try (PreparedStatement preparedStatement = conexion.prepareStatement(sqlSelect)) {
+            preparedStatement.setString(1, nombre);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+            	while (resultSet.next()) {
+                    Struct struct = (Struct) resultSet.getObject("datos_personales");
+
+                    // Obtener los atributos de la estructura
+                    Object[] attributes = struct.getAttributes();
+
+                    // Suponiendo que el tipo STRUCT tiene dos atributos: nombre y telefono
+                    String nombrePersona = (String) attributes[0];
+                    String telefonoPersona = (String) attributes[1];
+
+                    // Crear un objeto Persona
+                    Persona persona = new Persona(nombrePersona, telefonoPersona);
+
+                    // Haz lo que necesites con el objeto Persona
+                    System.out.println("Persona encontrada: " + persona.getNombre()+" telefono: "+persona.getTelefono());
+                }
+
+                if (!resultSet.isClosed()) {
+                    resultSet.close();
+                }            
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al obtener la persona desde la base de datos.");
+            e.printStackTrace();
+        }
+    }
 	
 	
 

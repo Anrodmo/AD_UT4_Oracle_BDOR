@@ -17,7 +17,10 @@ public class App
 		a.abrirConexion();   
 		a.mostrarContactos();
 		// a.insertaralumno(new Estudiante("ID002",new Persona("Felipe","967124578")));
-		a.eliminarAlumno("juan");
+		// a.eliminarAlumno("juan");
+		
+		a.obtenerTelefonoAlumno("Felipe");
+		a.obtenerPersonaDesdeBaseDeDatos("Felipe");
 		a.cerrarConexion();
 		
 			
