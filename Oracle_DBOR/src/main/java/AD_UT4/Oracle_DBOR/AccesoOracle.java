@@ -62,7 +62,7 @@ public class AccesoOracle {
 		System.out.println("INFORMACION DE CONTACTOS--------------");
 				
 		while(resul.next()){
-			//aquí tambien podriamos poner resul.getInt("nif");
+			//aquí también podríamos poner resul.getInt("nif");
 			System.out.printf("\nNOMBRE: %s\nTELEFONO: %s", resul.getString(1), resul.getString(2));
 		}
 		System.out.println("\n--------------");
@@ -130,13 +130,9 @@ public class AccesoOracle {
 			operacionCorrecta = filasAfectadas>0;
 			System.out.println("si esto sin error, resultado: "+operacionCorrecta);
 		} catch (SQLException e) {
-			System.out.println("Si esto error");
-//			
+			System.out.println("Si esto error");			
 			e.printStackTrace();
-		}
-		
-		
-		
+		}						
 		return operacionCorrecta;
 	}
 	
@@ -154,8 +150,8 @@ public class AccesoOracle {
 	        preparedStatement.setString(1, nombre);
 	        try (ResultSet resultSet = preparedStatement.executeQuery()) {
 	            if (resultSet.next()) {	            	
-	                telefono = resultSet.getString("datos_personales.telefono"); // aqui recojo de la columna por nnombre
-	                // telefono = resultSet.getString(1);  // aqui recojo de la primera columna
+	                telefono = resultSet.getString("datos_personales.telefono"); // aquí recojo de la columna por nnombre
+	                // teléfono = resultSet.getString(1);  // aquí recojo de la primera columna
 	                System.out.println("Teléfono de " + nombre + ": " + telefono);               	            		            	
 	                operacionCorrecta = true;
 	            } else {
@@ -166,7 +162,6 @@ public class AccesoOracle {
 	        System.out.println("Error al obtener el teléfono del alumno.");
 	        e.printStackTrace();
 	    }
-
 	    return operacionCorrecta;
 	}
 		

@@ -2,7 +2,15 @@ package AD_UT4.Oracle_DBOR;
 
 public class Persona {
 	
-	private String nombre;
+	private String nombre;	
+	private String telefono;
+	
+	public Persona(String nombre, String telefono) {
+		super();
+		this.nombre = nombre;
+		this.telefono = telefono;
+	}
+	
 	public String getNombre() {
 		return nombre;
 	}
@@ -16,14 +24,6 @@ public class Persona {
 	}
 
 	public void setTelefono(String telefono) {
-		this.telefono = telefono;
-	}
-
-	private String telefono;
-	
-	public Persona(String nombre, String telefono) {
-		super();
-		this.nombre = nombre;
 		this.telefono = telefono;
 	}
 	
