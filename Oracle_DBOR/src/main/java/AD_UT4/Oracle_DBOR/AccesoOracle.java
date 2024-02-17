@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Struct;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 
@@ -104,7 +105,7 @@ public class AccesoOracle {
 			if(res == 1)
 				insertCorrecto=true;
 			System.out.println("Si el codigo ha llegado hasta aqui es que se ha insertado"
-					+ "correctamente, filas modificadas: "+res);			
+					+ " correctamente, filas modificadas: "+res);			
 			
 		} catch (SQLException e) {
 			
@@ -244,6 +245,51 @@ public class AccesoOracle {
 	        e.printStackTrace();
 	    }
 	    return listadoEstudiantes;
+	}
+	
+	/**
+	 * Método que muestra y devuelve un ArrayList<Estudiante>  con los objetos de la tabla misalumnos
+	 * @return ArrayList<Estudiante>  con todos los registros de la tabla misalumnos
+	 */
+	public ArrayList<Admitido> obtenerAdmitidos() {
+	    String sqlSelect = "SELECT a.dia, a.matriculado FROM admitidos a";
+	    ArrayList<Admitido> listadoAdmitidos = new ArrayList<>();
+
+	    try (PreparedStatement preparedStatement = conexion.prepareStatement(sqlSelect);
+	         ResultSet resultSet = preparedStatement.executeQuery()) {
+
+	        while (resultSet.next()) {
+	            // Recupero el id
+	            LocalDate dia = resultSet.getDate("dia").toLocalDate();
+	            // Recupero los tipos ESTUDIANTE de la consulta
+	            Struct struct = (Struct) resultSet.getObject("matriculado");
+	            // Obtengo los atributos de la estructura
+	            Object[] attributes = struct.getAttributes();
+	            String id_estudiante = (String) attributes[0];
+	            
+	            Struct struct2 = (Struct) attributes[1];
+	            Object[] attributes2 = struct2.getAttributes();
+	            String nombrePersona = (String) attributes2[0];
+	            String telefonoPersona = (String) attributes2[1];
+	            // Creo un objeto Persona
+	            Persona persona = new Persona(nombrePersona, telefonoPersona);
+	            // Creo un objeto Estudiante con id y Persona
+	            Estudiante estudiante = new Estudiante(id_estudiante, persona);
+	            // Creo un objeto Admitido
+	            Admitido admitido = new Admitido(dia, estudiante);
+	            listadoAdmitidos.add(admitido);
+
+	            System.out.println("Admitido encontrado: "+admitido.getDia()+", " 
+	            		+ admitido.getMatriculado().getId_estudiante()+", "
+	            		+admitido.getMatriculado().getDatos_personales().getNombre()+", "
+	            		+admitido.getMatriculado().getDatos_personales().getTelefono());
+	        }
+
+	    } catch (SQLException e) {
+	        System.out.println("Error al obtener los estudiantes desde la base de datos.");
+	        e.printStackTrace();
+	    }
+	    return listadoAdmitidos;
 	}
 	
 	
