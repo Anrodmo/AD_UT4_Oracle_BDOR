@@ -248,8 +248,8 @@ public class AccesoOracle {
 	}
 	
 	/**
-	 * Método que muestra y devuelve un ArrayList<Estudiante>  con los objetos de la tabla misalumnos
-	 * @return ArrayList<Estudiante>  con todos los registros de la tabla misalumnos
+	 * Método que muestra y devuelve un ArrayList<Admitido>  con los objetos de la tabla admitidos
+	 * @return ArrayList<Admitido>  con todos los registros de la tabla admitidos
 	 */
 	public ArrayList<Admitido> obtenerAdmitidos() {
 	    String sqlSelect = "SELECT a.dia, a.matriculado FROM admitidos a";
